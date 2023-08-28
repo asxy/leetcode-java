@@ -1,40 +1,39 @@
 package daily;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by asxy on 2023/8/24
+ * Created by asxy on 2023/8/28
  */
 class Solution {
-    public int countServers(int[][] grid) {
-        Map<Integer, Integer> row = new HashMap<>();
-        Map<Integer, Integer> col = new HashMap<>();
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        int left = newInterval[0];
+        int right = newInterval[1];
+        boolean place = false;
+        List<int[]> list = new ArrayList<>();
 
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[0].length; j++) {
-                if(grid[i][j] == 1){
-                    row.put(i, row.getOrDefault(i, 0) + 1);
-                    col.put(j, col.getOrDefault(j, 0) + 1);
+        for (int[] ints : intervals) {
+            if (left > ints[1]) {
+                if (!place) {
+                    list.add(new int[]{left, right});
+                    place = true;
                 }
+                list.add(ints);
+            } else if (right < ints[0]) {
+                list.add(ints);
+            } else {
+                left = Math.min(left, ints[0]);
+                right = Math.max(right, ints[1]);
             }
         }
-
-        int result = 0;
-        for(int i = 0; i < grid.length; i++){
-            for(int j = 0; j < grid[0].length; j++){
-                if(grid[i][j] == 1 && (row.get(i) > 1 || col.get(j) > 1)){
-                    result++;
-                }
-            }
+        if (!place) {
+            list.add(new int[]{left, right});
+        }
+        int[][] result = new int[list.size()][2];
+        for (int i = 0; i < list.size(); i++) {
+            result[i] = list.get(i);
         }
         return result;
-    }
-
-    public static void main(String[] args) {
-        Solution solution = new Solution();
-//        int[][] grid = new int[][]{{1, 0, 1}, {0, 0, 0}, {1, 0, 1}};
-        int[][] grid = new int[][]{{1,1},{1,0}};
-        System.out.println(solution.countServers(grid));
     }
 }
