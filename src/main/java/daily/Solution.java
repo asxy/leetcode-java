@@ -1,39 +1,25 @@
 package daily;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Created by asxy on 2023/8/28
+ * Created by asxy on 2023/9/1
  */
 class Solution {
-    public int[][] insert(int[][] intervals, int[] newInterval) {
-        int left = newInterval[0];
-        int right = newInterval[1];
-        boolean place = false;
-        List<int[]> list = new ArrayList<>();
+    public long waysToBuyPensPencils(int total, int cost1, int cost2) {
 
-        for (int[] ints : intervals) {
-            if (left > ints[1]) {
-                if (!place) {
-                    list.add(new int[]{left, right});
-                    place = true;
-                }
-                list.add(ints);
-            } else if (right < ints[0]) {
-                list.add(ints);
-            } else {
-                left = Math.min(left, ints[0]);
-                right = Math.max(right, ints[1]);
-            }
+        int result = 0;
+
+        for (int i = 0; i <= Math.floorDiv(total, cost1); i++) {
+            int remain = total - cost1 * i;
+            // +1 的原因是存在不买第二种的情况
+            result += Math.floorDiv(remain, cost2) + 1;
         }
-        if (!place) {
-            list.add(new int[]{left, right});
-        }
-        int[][] result = new int[list.size()][2];
-        for (int i = 0; i < list.size(); i++) {
-            result[i] = list.get(i);
-        }
+
         return result;
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        System.out.println(solution.waysToBuyPensPencils(20, 10, 5));
+        System.out.println(solution.waysToBuyPensPencils(5, 10, 10));
     }
 }
